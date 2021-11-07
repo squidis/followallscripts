@@ -1,0 +1,19 @@
+{"scripts": [
+    {
+      "script": "{\"scrapePage\":function scrapePage(feed, doc, url) {\n  var listData = [];\n\n  var scrapeItem = function scrapeItem(item, feed, canon) {\n    var data = item.data;\n    var domain = 'old.reddit.com';\n    return {\n      isReblog: false,\n      title: data.title,\n      text: data.selftext,\n      link: data.url ? data.url : false,\n      votes: data.score,\n      reblogs: 0,\n      commentCount: data.num_comments,\n      url: \"https://\" + domain + data.permalink,\n      //unique url that identifies the post, not the reblog url\n      created: data.created_utc * 1000,\n      canon: \"https://\" + domain + '/' + data.subreddit_name_prefixed,\n      displayName: data.author,\n      username: data.author,\n      images: data.post_hint === 'image' ? [data.url] : [],\n      feedName: feed.name,\n      feedCanon: canon,\n      profileURL: \"https://\" + domain + '/u/' + data.author\n    };\n  };\n\n  doc.data.children.forEach(function (item) {\n    var post = scrapeItem(item, feed, url);\n    listData.push(post);\n  });\n  return listData;\n},\"generateRequestURL\":function generateRequestURL(currentURL) {\n  var genurl = '';\n  var urlparts = currentURL.split('/');\n\n  if (currentURL.indexOf('?') > -1) {\n    urlparts.forEach(function (entry, index) {\n      genurl += entry + '/';\n\n      if (index === urlparts.length - 2) {\n        genurl += '.json';\n      }\n    });\n    genurl = genurl.slice(0, -1);\n  } else {\n    genurl = currentURL;\n    genurl += '.json';\n  }\n\n  return genurl;\n}}",
+      "name": "Reddit",
+      "regex": "reddit.com",
+      "updateMethod": "xhr",
+      "id": "17bb4315-510a-446c-9d15-100fad532eb9",
+      "scriptListURL": "http://www.testy.com"
+    },
+    {
+      "id": "9f30ecbc-f50d-4398-aeaf-81f18aa8742c",
+      "script": "{\"scrapePage\":function scrapePage(feed, doc, url) {\n  var listData = [];\n  var parser = new DOMParser();\n\n  var scrapeItem = function scrapeItem(item, feed, canon) {\n    console.log('youtubeScraper.js 21', item);\n    return {\n      isReblog: false,\n      title: item.querySelectorAll('title')[0].textContent,\n      text: item.querySelectorAll('description')[0].textContent,\n      link: item.querySelectorAll('link')[0].getAttribute('href'),\n      votes: Math.floor(item.querySelectorAll('starRating')[0].getAttribute('count') / 5 * item.querySelectorAll('starRating')[0].getAttribute('average')),\n      reblogs: 0,\n      commentCount: 0,\n      url: item.querySelectorAll('link')[0].getAttribute('href'),\n      created: new Date(item.querySelectorAll('published')[0].textContent).getTime(),\n      canon: item.querySelectorAll('author uri')[0].textContent,\n      displayName: item.querySelectorAll('author name')[0].textContent,\n      username: item.querySelectorAll('channelId')[0].textContent,\n      images: [],\n      feedName: feed.name,\n      feedCanon: canon,\n      profileURL: item.querySelectorAll('author uri')[0].textContent\n    };\n  };\n\n  var xml = parser.parseFromString(doc, \"application/xml\");\n  console.log('youtubeScraper.js 8', xml);\n  xml.querySelectorAll('entry').forEach(function (item) {\n    var post = scrapeItem(item, feed, url);\n    listData.push(post);\n  });\n  return listData;\n},\"generateRequestURL\":function generateRequestURL(currentURL) {\n  var urlBits = currentURL.split('/');\n  return 'https://www.youtube.com/feeds/videos.xml?channel_id=' + urlBits[4];\n}}",
+      "name": "Youtube",
+      "regex": "youtube.com",
+      "updateMethod": "xhr",
+      "scriptListURL": "http://www.testy.com"
+    }
+]
+}
