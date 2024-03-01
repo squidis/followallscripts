@@ -1,7 +1,7 @@
 {"scripts": [
     {
       "id": "1cd5398b-76cc-4a33-ac64-6286a4e8bdad",
-        "scripts": "",
+        "script": "",
         "name": "Twitter remote",
       "regex": "twitter.com",
       "updateMethod": "screen",
