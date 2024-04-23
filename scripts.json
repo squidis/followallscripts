@@ -10,7 +10,7 @@
       "regex": "twitter.com",
       "updateMethod": "screen",
       "description": "Screen scrapes public Twitter profiles",
-      "type": "remote",
+      "type": "remote"
         
     }
 ]
